@@ -40,7 +40,12 @@
 #define ST7735_COLOR565(r, g, b) (((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xF8) >> 3))
 
 void ST7735_Init(void);
+void ST7735_WriteCommand(uint8_t cmd);
+void ST7735_WriteData(uint8_t *data, size_t data_size);
+void ST7735_SetAddressWindow(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
 void ST7735_DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
 void ST7735_FillScreen(uint16_t color);
+void ST7735_DrawPoint(int16_t x, int16_t y, uint16_t color);
+void ST7735_Draw();
 #endif
 

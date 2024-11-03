@@ -57,8 +57,8 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
     Application/LCD 
     Application/INA226 
-    ${CMAKE_PROJECT_NAME}/Application/LCD 
-    ${CMAKE_PROJECT_NAME}/Application/INA226 
+    Application/GUI/uGUI
+    Application/GUI/MYGUI   
 )
 
 # Add project symbols (macros)

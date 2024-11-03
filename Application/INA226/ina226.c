@@ -25,7 +25,7 @@ float INA226_GetCurrent()
 	float fCurrent;
 	regData = INA226_GetCurrentReg();
 	if(regData >= 0x8000)	regData = 0;
-	fCurrent = regData * 0.0002f;/*电流的LSB = 0.2mA，由用户配置*/
+	fCurrent = regData * 0.001f;/*电流的LSB = 1mA，由用户配置*/
 	return fCurrent;
 }
 /*
@@ -38,7 +38,7 @@ float INA226_GetPower()
 	uint16_t regData;
 	float fPower;
 	regData = INA226_GetPowerReg();
-	fPower = regData * 0.005f;/*功率的LSB = 电流的LSB*25*/
+	fPower = regData * 0.025f;/*功率的LSB = 电流的LSB*25*/
 	return fPower;
 }
 
@@ -73,8 +73,8 @@ uint16_t INA226_GetBusVReg()
 {
     uint8_t SentTable[1] = {INA226_BUSV};
     uint8_t ReceivedTable[2];
-    HAL_I2C_Master_Transmit(&INA226_COM_PORT,INA226_ADDRESS, SentTable, 1, INA226_I2C_TIMEOUT);
-    if (HAL_I2C_Master_Receive(&INA226_COM_PORT,INA226_ADDRESS, ReceivedTable, 2, INA226_I2C_TIMEOUT) != HAL_OK) return 0xFF;
+    HAL_I2C_Master_Transmit(&INA226_COM_PORT,INA226_ADDRESS, SentTable, 1,INA226_I2C_TIMEOUT);
+    if (HAL_I2C_Master_Receive(&INA226_COM_PORT,INA226_ADDRESS, ReceivedTable, 2,INA226_I2C_TIMEOUT) != HAL_OK) return 0xFF;
     else return ((uint16_t)ReceivedTable[0]<<8 | ReceivedTable[1]);
 }
 

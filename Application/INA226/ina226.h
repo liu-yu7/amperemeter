@@ -7,7 +7,7 @@
 #define INA226_COM_PORT	hi2c2		/*通讯使用的IIC接口*/
 
 #define INA226_ADDRESS 		0x80	/*INA226的地址*/
-#define INA226_I2C_TIMEOUT 	0xff		/*IIC通讯超时*/
+#define INA226_I2C_TIMEOUT 	0xffff		/*IIC通讯超时*/
 
 
 #define INA226_CALIB_VAL 1024

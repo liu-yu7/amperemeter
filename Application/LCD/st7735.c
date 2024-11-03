@@ -31,6 +31,8 @@
 #define ST7735_MADCTL_MY  0x80
 #define ST7735_MADCTL_MV  0x20
 
+uint8_t gram[80][320];
+
 void ST7735_Reset(void)
 {
   HAL_GPIO_WritePin(ST7735_RST_GPIO_Port, ST7735_RST_Pin, GPIO_PIN_RESET);
@@ -59,8 +61,15 @@ void ST7735_WriteData(uint8_t *data, size_t data_size)
 {
   HAL_GPIO_WritePin(ST7735_DC_GPIO_Port, ST7735_DC_Pin, GPIO_PIN_SET);
   HAL_GPIO_WritePin(ST7735_CS_GPIO_Port, ST7735_CS_Pin, GPIO_PIN_RESET);
-  HAL_SPI_Transmit(&ST7735_SPI_INSTANCE, data, data_size, HAL_MAX_DELAY);
+  HAL_SPI_Transmit(&ST7735_SPI_INSTANCE, data, data_size, HAL_MAX_DELAY); 
   HAL_GPIO_WritePin(ST7735_CS_GPIO_Port, ST7735_CS_Pin, GPIO_PIN_SET);
+}
+
+void ST7735_WriteData_DMA(uint8_t *data, size_t data_size)
+{
+  HAL_GPIO_WritePin(ST7735_DC_GPIO_Port, ST7735_DC_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(ST7735_CS_GPIO_Port, ST7735_CS_Pin, GPIO_PIN_RESET);
+  HAL_SPI_Transmit_DMA(&ST7735_SPI_INSTANCE, data, data_size);
 }
 
 void ST7735_SetRotation(uint8_t rotation)
@@ -208,8 +217,8 @@ void ST7735_DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t heigh
   uint16_t i = 0;
 
   for (i = 0; i < width; i++) {
-    buff[i * 2] = color >> 8;
-    buff[i * 2 + 1] = color & 0xFF;
+    buff[i * 2 + 1] = color >> 8;
+    buff[i * 2] = color & 0xFF;
   }
 
   ST7735_SetAddressWindow(x, y, x + width - 1, y + height - 1);
@@ -223,4 +232,22 @@ void ST7735_DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t heigh
 void ST7735_FillScreen(uint16_t color)
 {
   ST7735_DrawRectangle(0, 0, ST7735_WIDTH, ST7735_HEIGHT, color);
+}
+
+
+void ST7735_DrawPoint(int16_t x, int16_t y, uint16_t color)
+{
+  // uint16_t temp = color >> 8;
+  // gram[y][x] = color << 8 | temp;
+  gram[y][x * 2] = color >> 8;
+  gram[y][x * 2 + 1] = color & 0xFF;
+}
+
+void ST7735_Draw()
+{
+  ST7735_SetAddressWindow(0, 0, ST7735_WIDTH - 1, ST7735_HEIGHT - 1);
+  ST7735_WriteCommand(ST7735_RAMWR);
+  // Write the color data
+  ST7735_WriteData_DMA(&gram[0][0], sizeof(uint16_t) * ST7735_WIDTH * ST7735_HEIGHT);
+
 }

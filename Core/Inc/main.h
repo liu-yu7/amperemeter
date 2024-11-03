@@ -67,6 +67,7 @@ void Error_Handler(void);
 #define LCD_CS_GPIO_Port GPIOB
 #define ALERT_Pin GPIO_PIN_6
 #define ALERT_GPIO_Port GPIOC
+#define ALERT_EXTI_IRQn EXTI9_5_IRQn
 #define SET_Pin GPIO_PIN_3
 #define SET_GPIO_Port GPIOB
 #define DOWN_Pin GPIO_PIN_4

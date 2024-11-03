@@ -3,7 +3,9 @@
         "compare": "c",
         "ina226.h": "c",
         "i2c.h": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "lv_btn.h": "c",
+        "numeric": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false
 }
