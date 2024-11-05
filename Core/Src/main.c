@@ -106,11 +106,12 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   uint16_t Config = INA226_AVG_16|INA226_VBUS_1100uS|INA226_VSH_1100uS|INA226_MODE_CONT_SHUNT_AND_BUS;
-  INA226_SetConfig(Config);               //0100_010_100_100_111   //16次平均，1.1ms,1.1ms，连续转�???
-  uint16_t Cal = 0.00512f/0.001f/0.001f;
-  INA226_SetCalibrationReg(0x1400);       //电流分辨�???1ma，采样电�???1mΩ，cal = 0.00512/(0.001*0.001)，最大电�???32.768A
-  HAL_TIM_Base_Start_IT(&htim6);
+  INA226_SetConfig(Config);               //0100_010_100_100_111   //16次平均，1.1ms,1.1ms，连续转�????
+  //uint16_t Cal = 0.00512f/0.001f/0.001f;
+  INA226_SetCalibrationReg(0x1400);       //电流分辨�????1ma，采样电�????1mΩ，cal = 0.00512/(0.001*0.001)，最大电�????32.768A
+  
   Mygui_init();
+  HAL_TIM_Base_Start_IT(&htim6);
   while (1)
   {
     /* USER CODE END WHILE */

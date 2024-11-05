@@ -6,13 +6,17 @@
 
 typedef struct
 {
-    uint32_t time;     //运行时间，单位：秒
-    uint8_t output;    //输出状态，0：关闭，1：开启
+    uint32_t time;      //运行时间，单位：秒
+    uint8_t output;     //输出状态，0：关闭，1：开启
     float current;      //电流，单位：A
     float voltage;      //电压，单位：V
     float power;        //功率，单位：W
     float energy;       //电能，单位：Wh
-    uint8_t current_buf[60];  //电流缓冲区，用于绘制曲线
+    float current_reso;  //电流分辨率，单位：A
+    uint8_t current_buf[36];    //电流缓冲区，用于绘制曲线
+    uint8_t current_buf_index;  //电流缓冲区索引
+    float min_current;    //最小电流，单位：A
+    float max_current;    //最大电流，单位：A
 } Measure_t;
 
 typedef struct
@@ -30,9 +34,29 @@ typedef struct
 
 }usr_config_t;
 
+typedef enum
+{
+    Button_UP,
+    Button_DOWN,        
+    Button_SET_s,       //短按
+    Button_SET_l,       //长按
+}Button_Act_e;
+
+
+typedef struct MenuItem
+{
+	struct MenuItem *next;			                /* 指向下一个菜单项的指针 */
+	struct MenuItem *back;			                /* 指向上一个菜单项的指针 */
+	struct MenuItem *sub;			                /* 指向该级子菜单项的指针 */
+    void (*init)();				                    /* 指向初始化函数的指针 */
+	void (*action)();				                /* 指向执行函数的指针 */
+    void (*button)(Button_Act_e button_act);		/* 指向该菜单按键回调函数 */
+}MenuItem_t;
+
 extern Measure_t measure;
 extern usr_config_t usr_config;
 
+void Button_Callback(Button_Act_e button_act);
 void Mygui_init(void);
 void Mygui_task();
 

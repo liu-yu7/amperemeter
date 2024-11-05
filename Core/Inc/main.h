@@ -70,10 +70,13 @@ void Error_Handler(void);
 #define ALERT_EXTI_IRQn EXTI9_5_IRQn
 #define SET_Pin GPIO_PIN_3
 #define SET_GPIO_Port GPIOB
+#define SET_EXTI_IRQn EXTI3_IRQn
 #define DOWN_Pin GPIO_PIN_4
 #define DOWN_GPIO_Port GPIOB
+#define DOWN_EXTI_IRQn EXTI4_IRQn
 #define UP_Pin GPIO_PIN_5
 #define UP_GPIO_Port GPIOB
+#define UP_EXTI_IRQn EXTI9_5_IRQn
 
 /* USER CODE BEGIN Private defines */
 

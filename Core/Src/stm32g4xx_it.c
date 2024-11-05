@@ -204,6 +204,46 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles EXTI line3 interrupt.
+  */
+void EXTI3_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI3_IRQn 0 */
+
+  /* USER CODE END EXTI3_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(SET_Pin);
+  /* USER CODE BEGIN EXTI3_IRQn 1 */
+  static uint32_t last_time = 0;
+  if(HAL_GPIO_ReadPin(SET_GPIO_Port, SET_Pin) == GPIO_PIN_RESET)
+  {
+    last_time = HAL_GetTick();
+  }
+  else if(HAL_GetTick() - last_time > 500)
+  {
+    Button_Callback(Button_SET_l);
+  }
+  else
+  {
+    Button_Callback(Button_SET_s);
+  }
+  /* USER CODE END EXTI3_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line4 interrupt.
+  */
+void EXTI4_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI4_IRQn 0 */
+
+  /* USER CODE END EXTI4_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(DOWN_Pin);
+  /* USER CODE BEGIN EXTI4_IRQn 1 */
+  Button_Callback(Button_DOWN);
+  /* USER CODE END EXTI4_IRQn 1 */
+}
+
+/**
   * @brief This function handles DMA1 channel1 global interrupt.
   */
 void DMA1_Channel1_IRQHandler(void)
@@ -211,7 +251,7 @@ void DMA1_Channel1_IRQHandler(void)
   /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
   if(__HAL_DMA_GET_FLAG(&hdma_spi1_tx, DMA_FLAG_TC1))
   {
-    HAL_GPIO_WritePin(ST7735_CS_GPIO_Port, ST7735_CS_Pin, GPIO_PIN_SET); //spi�����������Ƭѡ
+    HAL_GPIO_WritePin(ST7735_CS_GPIO_Port, ST7735_CS_Pin, GPIO_PIN_SET); //spi�����������Ƭ�?
   }
   /* USER CODE END DMA1_Channel1_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_spi1_tx);
@@ -229,8 +269,18 @@ void EXTI9_5_IRQHandler(void)
   /* USER CODE BEGIN EXTI9_5_IRQn 0 */
 
   /* USER CODE END EXTI9_5_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(UP_Pin);
   HAL_GPIO_EXTI_IRQHandler(ALERT_Pin);
   /* USER CODE BEGIN EXTI9_5_IRQn 1 */
+  if(HAL_GPIO_ReadPin(ALERT_GPIO_Port, ALERT_Pin) == GPIO_PIN_RESET)
+  {
+    HAL_GPIO_WritePin(SW_IO_GPIO_Port, SW_IO_Pin, GPIO_PIN_RESET);
+    measure.output = 0;
+  }
+  else if(HAL_GPIO_ReadPin(UP_GPIO_Port, UP_Pin) == GPIO_PIN_RESET)
+  {
+    Button_Callback(Button_UP);
+  }
 
   /* USER CODE END EXTI9_5_IRQn 1 */
 }
@@ -245,17 +295,102 @@ void TIM6_DAC_IRQHandler(void)
   /* USER CODE END TIM6_DAC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
-  static uint8_t i = 0;
-  if (i++ == 100) 
+  static uint8_t t = 0;
+  if (t++ > 99) 
   {
-    i = 0;
-    measure.time++;
+    t = 0;
+    measure.time++; 
   }
+
+  if(t%10 == 0)
+  {
+    while(measure.current > measure.current_reso)
+    {
+      measure.current_reso *= 2;
+      for(uint8_t i = 0; i < 35; i++)measure.current_buf[i] /= 2;
+    }
+    measure.current_buf[measure.current_buf_index++] = measure.current/measure.current_reso*60.0f;
+
+    if(measure.current_buf_index == 36)measure.current_buf_index = 0; 
+
+    if(measure.current_reso > 0.125f)
+    {
+      uint8_t num = 0;
+      for(uint8_t i = 0; i < 35; i++)
+      {
+        if(measure.current_buf[i] > 30)
+        {
+          break;
+        }
+        num++;
+      }
+      if(num == 35)
+      {
+        measure.current_reso /= 2;
+        for(uint8_t i = 0; i < 35; i++)measure.current_buf[i] *= 2;
+      }
+    }
+  }
+
   measure.current = INA226_GetCurrent();
+  //电流补偿
+  if(measure.current < 1.0f)
+  {
+    measure.current = measure.current + usr_config.current_offset[0]*measure.current/1.0f;
+  }
+  else if(measure.current < 2.0f)
+  {
+    measure.current = measure.current + usr_config.current_offset[1]*measure.current/2.0f;
+  }
+  else if(measure.current < 5.0f)
+  {
+    measure.current = measure.current + usr_config.current_offset[2]*measure.current/5.0f;
+  }
+  else if(measure.current < 10.0f)
+  {
+    measure.current = measure.current + usr_config.current_offset[3]*measure.current/10.0f;
+  }
+  else if(measure.current < 20.0f)
+  {
+    measure.current = measure.current + usr_config.current_offset[4]*measure.current/20.0f;
+  }
+  else if(measure.current < 50.0f)
+  {
+    measure.current = measure.current + usr_config.current_offset[5]*measure.current/50.0f;
+  }
   measure.voltage = INA226_GetBusV();
+  //电压补偿
+  if(measure.voltage < 5.0f)
+  {
+    measure.voltage = measure.voltage + usr_config.voltage_offset[0]*measure.voltage/5.0f;
+  }
+  else if(measure.voltage < 10.0f)
+  {
+    measure.voltage = measure.voltage + usr_config.voltage_offset[1]*measure.voltage/10.0f;
+  }
+  else if(measure.voltage < 15.0f)
+  {
+    measure.voltage = measure.voltage + usr_config.voltage_offset[2]*measure.voltage/15.0f;
+  }
+  else if(measure.voltage < 20.0f)
+  {
+    measure.voltage = measure.voltage + usr_config.voltage_offset[3]*measure.voltage/20.0f;
+  }
+  else if (measure.voltage < 25.0f)
+  {
+    measure.voltage = measure.voltage + usr_config.voltage_offset[4]*measure.voltage/25.0f;
+  }
+  else if(measure.voltage < 30.0f)
+  {
+    measure.voltage = measure.voltage + usr_config.voltage_offset[5]*measure.voltage/30.0f;
+  }
   measure.power = INA226_GetPower();
   measure.energy += measure.power/100/60/60;
 
+  if(measure.current > measure.max_current)measure.max_current = measure.current;
+  if(measure.current < measure.min_current)measure.min_current = measure.voltage;
+
+  if(t%2 == 1)ST7735_Draw();
   /* USER CODE END TIM6_DAC_IRQn 1 */
 }
 

@@ -221,7 +221,7 @@ void ST7735_DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t heigh
     buff[i * 2] = color & 0xFF;
   }
 
-  ST7735_SetAddressWindow(x, y, x + width - 1, y + height - 1);
+  ST7735_SetAddressWindow(x, y, x + width, y + height - 1);
   ST7735_WriteCommand(ST7735_RAMWR);
   // Write the color data
   for (i = 0; i < height; i++) {

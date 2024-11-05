@@ -14,7 +14,7 @@
 
 #define ST7735_SPI_INSTANCE hspi1
 
-#define ST7735_XSTART 1
+#define ST7735_XSTART 0
 #define ST7735_YSTART 0x1a
 #define ST7735_WIDTH  160
 #define ST7735_HEIGHT 80
