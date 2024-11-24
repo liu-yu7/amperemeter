@@ -17,10 +17,12 @@ typedef struct
     uint8_t current_buf_index;  //电流缓冲区索引
     float min_current;    //最小电流，单位：A
     float max_current;    //最大电流，单位：A
+    uint8_t flag;         //标志位1：按键触发，2：保护
 } Measure_t;
 
 typedef struct
 {
+    uint32_t flag;                  //写flash标志位，0：未写，1：已写
     uint32_t current_limit_sw;      //电流限制开关，0：关闭，1：开启
     float limit_current;            //电流限制，单位：A
     uint32_t voltage_limit_sw;      //电压限制开关，0：关闭，1：开启
@@ -31,6 +33,7 @@ typedef struct
 
     uint32_t light;                 //背光亮度，0-100
     uint32_t volume;                //蜂鸣器音量，0-100
+    uint32_t unuse;                  //未使用
 
 }usr_config_t;
 

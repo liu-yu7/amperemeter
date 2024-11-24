@@ -55,12 +55,13 @@
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+uint32_t last_time = 0;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_spi1_tx;
 extern TIM_HandleTypeDef htim6;
+extern TIM_HandleTypeDef htim8;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -213,18 +214,14 @@ void EXTI3_IRQHandler(void)
   /* USER CODE END EXTI3_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(SET_Pin);
   /* USER CODE BEGIN EXTI3_IRQn 1 */
-  static uint32_t last_time = 0;
   if(HAL_GPIO_ReadPin(SET_GPIO_Port, SET_Pin) == GPIO_PIN_RESET)
   {
     last_time = HAL_GetTick();
   }
-  else if(HAL_GetTick() - last_time > 500)
-  {
-    Button_Callback(Button_SET_l);
-  }
   else
   {
-    Button_Callback(Button_SET_s);
+    if(HAL_GetTick() - last_time < 500 && last_time != 0) Button_Callback(Button_SET_s);
+    last_time = 0;
   }
   /* USER CODE END EXTI3_IRQn 1 */
 }
@@ -286,6 +283,30 @@ void EXTI9_5_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles TIM8 update interrupt.
+  */
+void TIM8_UP_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM8_UP_IRQn 0 */
+
+  /* USER CODE END TIM8_UP_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim8);
+  /* USER CODE BEGIN TIM8_UP_IRQn 1 */
+  static uint32_t count = 0;
+  if(measure.flag == 1)
+  {
+    count++;
+    if(count > 100)
+    {
+      measure.flag = 0;
+      count = 0;
+      TIM8->CCR1 = 0;
+    }
+  }
+  /* USER CODE END TIM8_UP_IRQn 1 */
+}
+
+/**
   * @brief This function handles TIM6 global interrupt, DAC1 and DAC3 channel underrun error interrupts.
   */
 void TIM6_DAC_IRQHandler(void)
@@ -334,23 +355,23 @@ void TIM6_DAC_IRQHandler(void)
 
   measure.current = INA226_GetCurrent();
   //电流补偿
-  if(measure.current < 1.0f)
+  if(measure.current < 1.5f)
   {
     measure.current = measure.current + usr_config.current_offset[0]*measure.current/1.0f;
   }
-  else if(measure.current < 2.0f)
+  else if(measure.current < 3.0f)
   {
     measure.current = measure.current + usr_config.current_offset[1]*measure.current/2.0f;
   }
-  else if(measure.current < 5.0f)
+  else if(measure.current < 7.5f)
   {
     measure.current = measure.current + usr_config.current_offset[2]*measure.current/5.0f;
   }
-  else if(measure.current < 10.0f)
+  else if(measure.current < 15.0f)
   {
     measure.current = measure.current + usr_config.current_offset[3]*measure.current/10.0f;
   }
-  else if(measure.current < 20.0f)
+  else if(measure.current < 30.0f)
   {
     measure.current = measure.current + usr_config.current_offset[4]*measure.current/20.0f;
   }
@@ -360,37 +381,56 @@ void TIM6_DAC_IRQHandler(void)
   }
   measure.voltage = INA226_GetBusV();
   //电压补偿
-  if(measure.voltage < 5.0f)
+  if(measure.voltage < 7.0f)
   {
     measure.voltage = measure.voltage + usr_config.voltage_offset[0]*measure.voltage/5.0f;
   }
-  else if(measure.voltage < 10.0f)
+  else if(measure.voltage < 13.0f)
   {
     measure.voltage = measure.voltage + usr_config.voltage_offset[1]*measure.voltage/10.0f;
   }
-  else if(measure.voltage < 15.0f)
+  else if(measure.voltage < 18.0f)
   {
     measure.voltage = measure.voltage + usr_config.voltage_offset[2]*measure.voltage/15.0f;
   }
-  else if(measure.voltage < 20.0f)
+  else if(measure.voltage < 23.0f)
   {
     measure.voltage = measure.voltage + usr_config.voltage_offset[3]*measure.voltage/20.0f;
   }
-  else if (measure.voltage < 25.0f)
+  else if (measure.voltage < 28.0f)
   {
     measure.voltage = measure.voltage + usr_config.voltage_offset[4]*measure.voltage/25.0f;
   }
-  else if(measure.voltage < 30.0f)
+  else if(measure.voltage < 33.0f)
   {
     measure.voltage = measure.voltage + usr_config.voltage_offset[5]*measure.voltage/30.0f;
   }
   measure.power = INA226_GetPower();
   measure.energy += measure.power/100/60/60;
 
+  if(usr_config.limit_voltage != 0)
+  {
+    if(usr_config.limit_voltage > measure.voltage)
+    {
+      HAL_GPIO_WritePin(SW_IO_GPIO_Port, SW_IO_Pin, GPIO_PIN_RESET);
+      measure.output = 0;
+      measure.flag = 2;
+      TIM8->CCR1 = usr_config.volume/10;
+    }
+  }
+  if(usr_config.limit_current != 0)
+  {
+    if(usr_config.limit_current < measure.current)
+    {
+      HAL_GPIO_WritePin(SW_IO_GPIO_Port, SW_IO_Pin, GPIO_PIN_RESET);
+      measure.output = 0;
+      measure.flag = 2;
+      TIM8->CCR1 = usr_config.volume/10;
+    }
+  }
+
   if(measure.current > measure.max_current)measure.max_current = measure.current;
   if(measure.current < measure.min_current)measure.min_current = measure.voltage;
-
-  if(t%2 == 1)ST7735_Draw();
   /* USER CODE END TIM6_DAC_IRQn 1 */
 }
 

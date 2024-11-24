@@ -1,24 +1,32 @@
 
-OpenDocument="stm32g4xx_hal.c", FilePath="C:/Users/yu/Desktop/amperemeter/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.c", Line=325
-OpenDocument="ugui.c", FilePath="C:/Users/yu/Desktop/amperemeter/Application/GUI/uGUI/ugui.c", Line=4632
-OpenDocument="st7735.c", FilePath="C:/Users/yu/Desktop/amperemeter/Application/LCD/st7735.c", Line=214
-OpenDocument="stm32g4xx_it.c", FilePath="C:/Users/yu/Desktop/amperemeter/Core/Src/stm32g4xx_it.c", Line=79
-OpenDocument="mygui.c", FilePath="C:/Users/yu/Desktop/amperemeter/Application/GUI/MYGUI/mygui.c", Line=0
+
+Breakpoint=C:/Users/yu/Desktop/amperemeter/Application/GUI/MYGUI/mygui.c:92:13, State=BP_STATE_DISABLED
+Breakpoint=C:/Users/yu/Desktop/amperemeter/Application/GUI/MYGUI/mygui.c:791:25, State=BP_STATE_DISABLED
+OpenDocument="stm32g4xx_hal.c", FilePath="C:/Users/yu/Desktop/amperemeter/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.c", Line=400
+OpenDocument="stm32g4xx_it.c", FilePath="C:/Users/yu/Desktop/amperemeter/Core/Src/stm32g4xx_it.c", Line=80
+OpenDocument="mygui.h", FilePath="C:/Users/yu/Desktop/amperemeter/Application/GUI/MYGUI/mygui.h", Line=0
+OpenDocument="ugui.c", FilePath="C:/Users/yu/Desktop/amperemeter/Application/GUI/uGUI/ugui.c", Line=4524
+OpenDocument="mygui.c", FilePath="C:/Users/yu/Desktop/amperemeter/Application/GUI/MYGUI/mygui.c", Line=78
 OpenDocument="main.c", FilePath="C:/Users/yu/Desktop/amperemeter/Core/Src/main.c", Line=61
 OpenToolbar="File", Floating=0, x=0, y=0
 OpenToolbar="View", Floating=0, x=1, y=0
 OpenToolbar="Debug", Floating=0, x=2, y=0
-OpenWindow="Source Files", DockArea=LEFT, x=0, y=0, w=549, h=406, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-OpenWindow="Disassembly", DockArea=BOTTOM, x=1, y=0, w=493, h=207, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-OpenWindow="Watched Data 1", DockArea=LEFT, x=0, y=1, w=549, h=310, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-OpenWindow="Data Sampling", DockArea=BOTTOM, x=0, y=0, w=1426, h=207, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, VisibleTab=0, UniformSampleSpacing=0
+OpenWindow="Source Files", DockArea=LEFT, x=0, y=0, w=549, h=394, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Disassembly", DockArea=BOTTOM, x=2, y=0, w=369, h=207, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Memory 1", DockArea=BOTTOM, x=0, y=0, w=482, h=207, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, EditorAddress=0x801F800
+OpenWindow="Watched Data 1", DockArea=LEFT, x=0, y=1, w=549, h=322, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Data Sampling", DockArea=BOTTOM, x=1, y=0, w=1067, h=207, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, VisibleTab=0, UniformSampleSpacing=0
 OpenWindow="Timeline", DockArea=RIGHT, x=0, y=0, w=514, h=717, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=1, DataPaneShown=1, PowerPaneShown=0, CodePaneShown=0, PinCursor="Cursor Movable", TimePerDiv="1 ns / Div", TimeStampFormat="Time", DataGraphDrawAsPoints=0, DataGraphLegendShown=1, DataGraphUniformSampleSpacing=0, DataGraphLegendPosition="341;0", PowerGraphDrawAsPoints=0, PowerGraphLegendShown=0, PowerGraphAvgFilterTime=Off, PowerGraphAvgFilterLen=Off, PowerGraphUniformSampleSpacing=0, PowerGraphLegendPosition="313;0", CodeGraphLegendShown=0, CodeGraphLegendPosition="327;0"
 TableHeader="Source Files", SortCol="#Insts", SortOrder="ASCENDING", VisibleCols=["File";"Status";"Size";"#Insts";"Path"], ColWidths=[205;100;100;100;819]
 TableHeader="Data Sampling Table", SortCol="Index", SortOrder="ASCENDING", VisibleCols=["Index";"Time"], ColWidths=[100;100]
-TableHeader="Data Sampling Setup", SortCol="Expression", SortOrder="DESCENDING", VisibleCols=["Expression";"Type";"Value";"Min";"Max";"Average";"# Changes";"Min. Change";"Max. Change"], ColWidths=[207;100;100;100;100;100;100;107;512]
+TableHeader="Data Sampling Setup", SortCol="Expression", SortOrder="DESCENDING", VisibleCols=["Expression";"Type";"Value";"Min";"Max";"Average";"# Changes";"Min. Change";"Max. Change"], ColWidths=[207;100;100;100;100;100;100;107;153]
 TableHeader="Power Sampling", SortCol="Index", SortOrder="ASCENDING", VisibleCols=["Index";"Time";"Ch 0"], ColWidths=[100;100;100]
-TableHeader="Watched Data 1", SortCol="Expression", SortOrder="ASCENDING", VisibleCols=["Expression";"Value";"Location";"Refresh"], ColWidths=[127;186;100;136]
+TableHeader="Watched Data 1", SortCol="Expression", SortOrder="ASCENDING", VisibleCols=["Expression";"Value";"Location";"Refresh"], ColWidths=[170;186;100;100]
 TableHeader="RegisterSelectionDialog", SortCol="None", SortOrder="ASCENDING", VisibleCols=[], ColWidths=[]
 TableHeader="TargetExceptionDialog", SortCol="Name", SortOrder="ASCENDING", VisibleCols=["Name";"Value";"Address";"Description"], ColWidths=[200;100;100;351]
 WatchedExpression="measure", RefreshRate=5, Window=Watched Data 1
 WatchedExpression="test", RefreshRate=5, Window=Watched Data 1
+WatchedExpression="p", Window=Watched Data 1
+WatchedExpression="i", Window=Watched Data 1
+WatchedExpression="usr_config", RefreshRate=5, Window=Watched Data 1
+WatchedExpression="buffer", Window=Watched Data 1

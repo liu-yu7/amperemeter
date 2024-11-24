@@ -61,7 +61,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+extern uint32_t last_time;
 /* USER CODE END 0 */
 
 /**
@@ -106,18 +106,27 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   uint16_t Config = INA226_AVG_16|INA226_VBUS_1100uS|INA226_VSH_1100uS|INA226_MODE_CONT_SHUNT_AND_BUS;
-  INA226_SetConfig(Config);               //0100_010_100_100_111   //16次平均，1.1ms,1.1ms，连续转�????
+  INA226_SetConfig(Config);               //0100_010_100_100_111   //16次平均，1.1ms,1.1ms，连续转�??????
   //uint16_t Cal = 0.00512f/0.001f/0.001f;
-  INA226_SetCalibrationReg(0x1400);       //电流分辨�????1ma，采样电�????1mΩ，cal = 0.00512/(0.001*0.001)，最大电�????32.768A
+  INA226_SetCalibrationReg(0x1400);       //电流分辨�??????1ma，采样电�??????1mΩ，cal = 0.00512/(0.001*0.001)，最大电�??????32.768A
   
   Mygui_init();
   HAL_TIM_Base_Start_IT(&htim6);
+  HAL_TIM_Base_Start_IT(&htim8);
+  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
+  TIM8->CCR1 = 0; 
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    if(HAL_GetTick() - last_time > 500 && last_time != 0)
+    {
+      Button_Callback(Button_SET_l);
+      last_time = 0;
+    }
     Mygui_task();
+    ST7735_Draw();
     HAL_Delay(20);
   }
   /* USER CODE END 3 */
